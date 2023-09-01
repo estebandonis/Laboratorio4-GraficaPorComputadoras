@@ -23,14 +23,14 @@ Vertex vertexShader(const Vertex& vertex, const Uniform& uniforms) {
   };
 };
 
-float rand(glm:: vec3 co) {
+float rand(glm::vec3 co) {
     return glm::fract(sin(glm::dot(co, glm::vec3(12.9898, 78.233, 54.53))) * 43758.5453);
 }
 Fragment fragmentShader(Fragment& fragment) {
     Color color;
 
     // Base color of the sun
-    glm::vec3 tmpColor = glm::vec3(150.0f/255.0f, 140.0f/255.0f, 6.0f/255.0f) * glm::vec3(1.5f, 1.0f, 0.0f);
+    glm::vec3 tmpColor = glm::vec3(244.0f/255.0f, 140.0f/255.0f, 6.0f/255.0f) * glm::vec3(1.5f, 0.0f, 0.0f);
 
     // Introduce some pseudo-random noise into the equation for a more realistic look
     float noise = rand(fragment.original);
@@ -46,7 +46,7 @@ Fragment fragmentShader(Fragment& fragment) {
     color = Color(tmpColor.x, tmpColor.y, tmpColor.z);
 
     // Apply glow effect
-    float glow = 0.8f + 0.4f * sin(3.0f * noise);
+    float glow = 5.0f + 5.0f * sin(3.0f * noise);
     fragment.color = color * fragment.intensity * glow;
 
     return fragment;
