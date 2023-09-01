@@ -2,6 +2,7 @@
 #include "color.h"
 #include "uniform.h"
 #include "fragment.h"
+#include "./FastNoiseLite.h"
 #include <cmath>
 #include <random>
 
@@ -29,25 +30,25 @@ float rand(glm:: vec3 co) {
 Fragment fragmentShader(Fragment& fragment) {
     Color color;
 
-    // Base color of the sun
-    glm::vec3 tmpColor = glm::vec3(150.0f/255.0f, 140.0f/255.0f, 6.0f/255.0f) * glm::vec3(1.5f, 1.0f, 0.0f);
+    glm:: vec3 groundColor = glm:: vec3(0.44f, 0.51f, 0.33f);
+    glm:: vec3 oceanColor = glm::vec3(0.12f, 0.38f, 0.57f);
 
-    // Introduce some pseudo-random noise into the equation for a more realistic look
-    float noise = rand(fragment.original);
+    glm:: vec2 uv = glm::clamp(glm::vec2(fragment.original.x, fragment.original.y), 0.0f, 1.0f);
 
-    // Affect the color intensity with the noise
-    tmpColor += glm::vec3(noise, noise, noise) * 0.5f;
+    FastNoiseLite noiseGenerator;
+    noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 
-    // Add a slight gradient from the center to the edge to give a sense of depth
-    float distanceFromCenter = glm::length(fragment.original);
-    tmpColor *= 1.0f - distanceFromCenter;
+    float ox = 200;
+    float oy = 650;
+    float zoom = 1000.0f;
 
-    // Convert tmpColor to color
-    color = Color(tmpColor.x, tmpColor.y, tmpColor.z);
+    float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
 
-    // Apply glow effect
-    float glow = 0.8f + 0.4f * sin(3.0f * noise);
-    fragment.color = color * fragment.intensity * glow;
+    glm::vec3 tmpColor = (noiseValue < 0.5f) ? oceanColor : groundColor;
+
+    color = Color (tmpColor.x, tmpColor.y, tmpColor.z);
+
+    fragment .color = color * fragment. intensity;
 
     return fragment;
 };
