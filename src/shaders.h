@@ -20,7 +20,7 @@ Vertex vertexShader(const Vertex& vertex, const Uniform& uniforms) {
   return Vertex{
     glm::vec3(screenVertex),
     transformedNormal,
-    vertex.original
+    vertex.position
   };
 };
 
@@ -37,22 +37,17 @@ Fragment fragmentShader(Fragment& fragment) {
 
     float ox = 900.0f;
     float oy = 400.0f;
-    float zoom = 20000.0f;
+    float zoom = 200.0f;
 
     float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
 
     glm:: vec3 tmpColor = (noiseValue < 0.5f) ? oceanColor: groundColor;
 
-    std::cout << noiseValue << std::endl;
-
-    FastNoiseLite noiseGeneratorB;
-    noiseGeneratorB.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
-
     float oxc = 2300.0f;
     float oyc = 1200.0f;
-    float zoomc = 50000.0f;
+    float zoomc = 500.0f;
 
-    float noiseValueC = noiseGeneratorB.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
+    float noiseValueC = noiseGenerator.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
 
     if (noiseValueC > 0.5f) {
         tmpColor = cloudColor;
