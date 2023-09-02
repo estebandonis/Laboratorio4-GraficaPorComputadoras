@@ -24,31 +24,43 @@ Vertex vertexShader(const Vertex& vertex, const Uniform& uniforms) {
   };
 };
 
-float rand(glm:: vec3 co) {
-    return glm::fract(sin(glm::dot(co, glm::vec3(12.9898, 78.233, 54.53))) * 43758.5453);
-}
 Fragment fragmentShader(Fragment& fragment) {
     Color color;
+    glm:: vec3 groundColor = glm::vec3(0.44f, 0.51f, 0.33f);
+    glm:: vec3 oceanColor = glm::vec3 (0.12f, 0.38f, 0.57f);
+    glm:: vec3 cloudColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    glm:: vec3 groundColor = glm:: vec3(0.44f, 0.51f, 0.33f);
-    glm:: vec3 oceanColor = glm::vec3(0.12f, 0.38f, 0.57f);
-
-    glm:: vec2 uv = glm::clamp(glm::vec2(fragment.original.x, fragment.original.y), 0.0f, 1.0f);
+    glm:: vec2 uv = glm::vec2(fragment.original.x, fragment.original.y);
 
     FastNoiseLite noiseGenerator;
     noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 
-    float ox = 200;
-    float oy = 650;
-    float zoom = 1000.0f;
+    float ox = 900.0f;
+    float oy = 400.0f;
+    float zoom = 20000.0f;
 
     float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
 
-    glm::vec3 tmpColor = (noiseValue < 0.5f) ? oceanColor : groundColor;
+    glm:: vec3 tmpColor = (noiseValue < 0.5f) ? oceanColor: groundColor;
+
+    std::cout << noiseValue << std::endl;
+
+    FastNoiseLite noiseGeneratorB;
+    noiseGeneratorB.SetNoiseType(FastNoiseLite::NoiseType_Cellular);
+
+    float oxc = 2300.0f;
+    float oyc = 1200.0f;
+    float zoomc = 50000.0f;
+
+    float noiseValueC = noiseGeneratorB.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
+
+    if (noiseValueC > 0.5f) {
+        tmpColor = cloudColor;
+    }
 
     color = Color (tmpColor.x, tmpColor.y, tmpColor.z);
 
-    fragment .color = color * fragment. intensity;
+    fragment.color = color * fragment.intensity;
 
     return fragment;
 };
