@@ -31,7 +31,7 @@ Fragment fragmentShader(Fragment& fragment) {
     Color color;
 
     // Base color of the sun
-    glm::vec3 tmpColor = glm::vec3(244.0f/255.0f, 140.0f/255.0f, 6.0f/255.0f) * glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 tmpColor = glm::vec3(244.0f/255.0f, 140.0f/255.0f, 6.0f/255.0f) * glm::vec3(1.0f, 0.0f, 0.0f);
 
     // Introduce some pseudo-random noise into the equation for a more realistic look
     float noise = rand(fragment.original);
@@ -42,6 +42,9 @@ Fragment fragmentShader(Fragment& fragment) {
     // Add a slight gradient from the center to the edge to give a sense of depth
     float distanceFromCenter = glm::length(fragment.original);
     tmpColor *= 1.0f - distanceFromCenter;
+
+    // Add an extra layer of red
+    tmpColor += glm::vec3(0.3f * noise, 0.0f, 0.0f);
 
     // Convert tmpColor to color
     color = Color(tmpColor.x, tmpColor.y, tmpColor.z);
