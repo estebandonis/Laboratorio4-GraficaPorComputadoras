@@ -24,11 +24,18 @@ Vertex vertexShader(const Vertex& vertex, const Uniform& uniforms) {
   };
 };
 
+float random_float_in_range(float min, float max) {
+    float random_number = rand();
+    float range = max - min;
+    return random_number / (float)RAND_MAX * range + min;
+}
+
 Fragment fragmentShader(Fragment& fragment) {
     Color color;
-    glm:: vec3 groundColor = glm::vec3(0.44f, 0.51f, 0.33f);
-    glm:: vec3 oceanColor = glm::vec3 (0.12f, 0.38f, 0.57f);
-    glm:: vec3 cloudColor = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 redColor = glm::vec3(0.88f, 0.22f, 0.08f);
+    glm::vec3 rederColor = glm::vec3 (0.98f, 0.10f, 0.08f);
+    glm::vec3 blackColor = glm::vec3(0.2f, 0.2f, 0.2f);
+    glm::vec3 grayColor = glm::vec3(0.8f, 0.8f, 0.8f);
 
     glm:: vec2 uv = glm::vec2(fragment.original.x, fragment.original.y);
 
@@ -41,16 +48,29 @@ Fragment fragmentShader(Fragment& fragment) {
 
     float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
 
-    glm:: vec3 tmpColor = (noiseValue < 0.5f) ? oceanColor: groundColor;
+    glm:: vec3 tmpColor = (noiseValue < 0.3f) ? rederColor: redColor;
 
-    float oxc = 2300.0f;
-    float oyc = 1200.0f;
-    float zoomc = 500.0f;
+    float oxc = 200.0f;
+    float oyc = 5600.0f;
+    float zoomc = 80.0f;
 
     float noiseValueC = noiseGenerator.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
 
-    if (noiseValueC > 0.5f) {
-        tmpColor = cloudColor;
+    float random_float = random_float_in_range(0.2, 0.8);
+
+    if (noiseValueC > random_float) {
+        tmpColor = blackColor;
+    }
+
+    float oxl = 200.0f;
+    float oyl = 5600.0f;
+    float random_float_L = random_float_in_range(70, 100);
+    float zooml = random_float_L;
+
+    float noiseValueL = noiseGenerator.GetNoise((uv.x + oxl) * zooml, (uv.y + oyl* zooml));
+
+    if (noiseValueL > 0.8f) {
+        tmpColor = grayColor;
     }
 
     color = Color (tmpColor.x, tmpColor.y, tmpColor.z);
