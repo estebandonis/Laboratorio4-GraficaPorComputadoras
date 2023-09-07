@@ -154,19 +154,28 @@ void render1(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
 
 
 float a = 3.14f / 3.0f;
+float b = 3.14f / 3.0f;
+float orbitRadius = 2.0f;
+float orbitSpeed = 0.1f;
 
 glm::mat4 createModelMatrix() {
     glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.7f, 1.7f, 1.7f));
-    glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 1.0f, 0.0f));
-    
+    a += 3;
+    glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a), glm::vec3(0.0f, 1.0f, 0.0f));
+
     return translation * scale * rotation;
 }
 
-glm::mat4 createModelMatrix1() {
-    glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(0.5f, 0.5f, 0.5f));
-    glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 2.0f, 0.0f));
+glm::mat4 createModelMatrix1(float deltaTime) {
+    float orbitalAngle = glm::radians(a) * deltaTime;
+    float x = orbitRadius * glm::cos(orbitalAngle);
+    float z = orbitRadius * glm::sin(orbitalAngle);
+
+    glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(x, 0.0f, z));
+    glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    b += 20;
+    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(b), glm::vec3(0.0f, 1.0f, 0.0f));
 
     return translation * scale * rotation;
 }
@@ -324,15 +333,12 @@ int main() {
 
         render(vertexBufferObject, uniformsPlaneta);
 
-        uniformsLuna.model = createModelMatrix1();
+        uniformsLuna.model = createModelMatrix1(1.0f);
         uniformsLuna.view = createViewMatrix();
         uniformsLuna.projection = createProjectionMatrix();
         uniformsLuna.viewport = createViewportMatrix();
 
-        float b = 3.14f / 3.0f;
-        // Escalar y mover la luna según sea necesario
-        uniformsLuna.model = glm::translate(uniformsLuna.model, glm::vec3(1.0f, 0.5f, 4.0f)); // Ajusta la traslación según sea necesario
-        uniformsLuna.model = glm::rotate(uniformsLuna.model, glm::radians(b++), glm::vec3(0.0f, 2.0f, 0.0f)); // Ajusta la rotación según sea necesario
+//        uniformsLuna.model = glm::translate(uniformsLuna.model, glm::vec3(0.0f, 0.5f, 4.0f));
 
         // Renderizar la luna utilizando el fragment shader moonFragmentShader
         render1(vertexBufferObject, uniformsLuna);
