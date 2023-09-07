@@ -56,7 +56,9 @@ Fragment fragmentShader(Fragment& fragment) {
 
     float noiseValueC = noiseGenerator.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
 
-    if (noiseValueC > 0.5f) {
+    float random_float = random_float_in_range(0.5, 0.8);
+
+    if (noiseValueC > random_float) {
         tmpColor = cloudColor;
     }
 
