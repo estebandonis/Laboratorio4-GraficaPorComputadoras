@@ -122,11 +122,11 @@ Fragment fragmentShader1(Fragment& fragment) {
 
     float ox = 900.0f;
     float oy = 10.0f;
-    float zoom = 3000.0f;
+    float zoom = 300.0f;
 
     float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
 
-    if (noiseValue > 0.4f) {
+    if (noiseValue > 0.6f) {
         tmpColor = lightGray;
     }
 
