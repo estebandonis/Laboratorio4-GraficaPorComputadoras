@@ -107,3 +107,32 @@ Fragment fragmentShader(Fragment& fragment) {
     return fragment;
 };
 
+Fragment fragmentShader1(Fragment& fragment) {
+    Color color;
+
+    glm::vec3 baseColor = glm::vec3(122, 122, 122); // Color azul para la Luna
+    glm::vec3 lightGray = glm::vec3(155, 155, 155); // Color azul para la Luna
+
+    glm::vec3 tmpColor = baseColor;
+
+    glm:: vec2 uv = glm::vec2(fragment.original.x, fragment.original.y);
+
+    FastNoiseLite noiseGenerator;
+    noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+
+    float ox = 900.0f;
+    float oy = 10.0f;
+    float zoom = 3000.0f;
+
+    float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
+
+    if (noiseValue > 0.4f) {
+        tmpColor = lightGray;
+    }
+
+    color = Color(static_cast<int>(tmpColor.x), static_cast<int>(tmpColor.y), static_cast<int>(tmpColor.z));
+
+    fragment.color = color * fragment.intensity;
+
+    return fragment;
+};

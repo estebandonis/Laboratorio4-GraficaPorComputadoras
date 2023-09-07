@@ -14,7 +14,7 @@
 #include "shaders.h"
 #include "triangle.h"
 
-const int WINDOW_WIDTH = 500;
+const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 500;
 
 std::array<std::array<float, WINDOW_WIDTH>, WINDOW_HEIGHT> zbuffer;
@@ -108,6 +108,50 @@ void render(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
     }
 }
 
+void render1(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
+    // 1. Vertex Shader
+    // vertex -> trasnformedVertices
+
+    std::vector<Vertex> transformedVertices(VBO.size() / 2);
+
+    for (int i = 0; i < VBO.size(); i+=2) {
+        glm::vec3 v = VBO[i];
+        glm::vec3 u = VBO[i+1];
+
+        Vertex vertex = {v, u};
+        transformedVertices.push_back(vertexShader(vertex, uniforms));
+    }
+
+
+    // 2. Primitive Assembly
+    // transformedVertices -> triangles
+    std::vector<std::vector<Vertex>> triangles = primitiveAssembly(transformedVertices);
+
+    // 3. Rasterize
+    // triangles -> Fragments
+    std::vector<Fragment> fragments;
+    for (const std::vector<Vertex>& triangleVertices : triangles) {
+        std::vector<Fragment> rasterizedTriangle = triangle(
+                triangleVertices[0],
+                triangleVertices[1],
+                triangleVertices[2]
+        );
+
+        fragments.insert(
+                fragments.end(),
+                rasterizedTriangle.begin(),
+                rasterizedTriangle.end()
+        );
+    }
+
+    // 4. Fragment Shader
+    // Fragments -> colors
+
+    for (Fragment fragment : fragments) {
+        point(fragmentShader1(fragment));
+    }
+}
+
 
 float a = 3.14f / 3.0f;
 
@@ -116,6 +160,16 @@ glm::mat4 createModelMatrix() {
     glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.7f, 1.7f, 1.7f));
     glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 1.0f, 0.0f));
     
+    return translation * scale * rotation;
+}
+
+float b = 10.0f;
+
+glm::mat4 createModelMatrix1() {
+    glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(b++), glm::vec3(0.0f, 2.0f, 0.0f));
+
     return translation * scale * rotation;
 }
 
@@ -143,10 +197,10 @@ glm::mat4 createViewportMatrix() {
     glm::mat4 viewport = glm::mat4(1.0f);
 
     // Scale
-    viewport = glm::scale(viewport, glm::vec3(WINDOW_WIDTH / 2.0f, WINDOW_HEIGHT / 2.0f, 0.5f));
+    viewport = glm::scale(viewport, glm::vec3(WINDOW_WIDTH / 3.0f, WINDOW_HEIGHT / 3.0f, 0.5f));
 
     // Translate
-    viewport = glm::translate(viewport, glm::vec3(1.0f, 1.0f, 0.5f));
+    viewport = glm::translate(viewport, glm::vec3(1.0f, 1.0f, 1.0f));
 
     return viewport;
 }
@@ -252,7 +306,8 @@ int main() {
         }
     }
 
-    Uniform uniforms;
+    Uniform uniformsPlaneta;
+    Uniform uniformsLuna;
 
     while (running) {
 
@@ -262,15 +317,25 @@ int main() {
             }
         }
 
-        uniforms.model = createModelMatrix();
-        uniforms.view = createViewMatrix();
-        uniforms.projection = createProjectionMatrix();
-        uniforms.viewport = createViewportMatrix();
-
         clear();
 
-        // Call our render function
-        render(vertexBufferObject, uniforms);
+        uniformsPlaneta.model = createModelMatrix();
+        uniformsPlaneta.view = createViewMatrix();
+        uniformsPlaneta.projection = createProjectionMatrix();
+        uniformsPlaneta.viewport = createViewportMatrix();
+
+        render(vertexBufferObject, uniformsPlaneta);
+
+        uniformsLuna.model = createModelMatrix1();
+        uniformsLuna.view = createViewMatrix();
+        uniformsLuna.projection = createProjectionMatrix();
+        uniformsLuna.viewport = createViewportMatrix();
+
+        // Escalar y mover la luna según sea necesario
+        uniformsLuna.model = glm::translate(uniformsLuna.model, glm::vec3(1.0f, 0.5f, 4.0f)); // Ajusta la traslación según sea necesario
+
+        // Renderizar la luna utilizando el fragment shader moonFragmentShader
+        render1(vertexBufferObject, uniformsLuna);
 
         // Present the frame buffer to the screen
         SDL_RenderPresent(renderer);
