@@ -15,6 +15,7 @@ Y luego ejecutar el siguiente comando en la terminal:
 Al ejecutarlo se verá algo así:
 
 
+![estrella](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/1511a07c-39b8-421a-a665-a6b2b6bc4e30)
 
 
 
