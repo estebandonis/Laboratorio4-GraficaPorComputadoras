@@ -14,7 +14,59 @@ Y luego ejecutar el siguiente comando en la terminal:
 
 Al ejecutarlo se verá algo así:
 
+Branch Main:
 
 
 
 
+
+
+
+
+
+
+Branch Planeta:
+
+
+
+
+
+
+
+
+
+
+
+Branch PlanetaX:
+
+
+
+
+
+
+
+
+
+Branch Tierra:
+
+
+
+
+
+
+
+
+
+
+
+Branch GiganteGaseoso:
+
+
+
+
+
+
+
+
+
+Estrella:
