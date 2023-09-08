@@ -108,15 +108,119 @@ void render(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
     }
 }
 
+void render1(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
+    // 1. Vertex Shader
+    // vertex -> trasnformedVertices
+
+    std::vector<Vertex> transformedVertices(VBO.size() / 2);
+
+    for (int i = 0; i < VBO.size(); i+=2) {
+        glm::vec3 v = VBO[i];
+        glm::vec3 u = VBO[i+1];
+
+        Vertex vertex = {v, u};
+        transformedVertices.push_back(vertexShader(vertex, uniforms));
+    }
+
+
+    // 2. Primitive Assembly
+    // transformedVertices -> triangles
+    std::vector<std::vector<Vertex>> triangles = primitiveAssembly(transformedVertices);
+
+    // 3. Rasterize
+    // triangles -> Fragments
+    std::vector<Fragment> fragments;
+    for (const std::vector<Vertex>& triangleVertices : triangles) {
+        std::vector<Fragment> rasterizedTriangle = triangle(
+                triangleVertices[0],
+                triangleVertices[1],
+                triangleVertices[2]
+        );
+
+        fragments.insert(
+                fragments.end(),
+                rasterizedTriangle.begin(),
+                rasterizedTriangle.end()
+        );
+    }
+
+    // 4. Fragment Shader
+    // Fragments -> colors
+
+    for (Fragment fragment : fragments) {
+        point(fragmentShader1(fragment));
+    }
+}
+
+void render2(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
+    // 1. Vertex Shader
+    // vertex -> trasnformedVertices
+
+    std::vector<Vertex> transformedVertices(VBO.size() / 2);
+
+    for (int i = 0; i < VBO.size(); i+=2) {
+        glm::vec3 v = VBO[i];
+        glm::vec3 u = VBO[i+1];
+
+        Vertex vertex = {v, u};
+        transformedVertices.push_back(vertexShader(vertex, uniforms));
+    }
+
+
+    // 2. Primitive Assembly
+    // transformedVertices -> triangles
+    std::vector<std::vector<Vertex>> triangles = primitiveAssembly(transformedVertices);
+
+    // 3. Rasterize
+    // triangles -> Fragments
+    std::vector<Fragment> fragments;
+    for (const std::vector<Vertex>& triangleVertices : triangles) {
+        std::vector<Fragment> rasterizedTriangle = triangle(
+                triangleVertices[0],
+                triangleVertices[1],
+                triangleVertices[2]
+        );
+
+        fragments.insert(
+                fragments.end(),
+                rasterizedTriangle.begin(),
+                rasterizedTriangle.end()
+        );
+    }
+
+    // 4. Fragment Shader
+    // Fragments -> colors
+
+    for (Fragment fragment : fragments) {
+        point(fragmentShader2(fragment));
+    }
+}
+
 
 float a = 3.14f / 3.0f;
 
 glm::mat4 createModelMatrix() {
-    glm::mat4 transtation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
+    glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
     glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.0f, 1.0f, 1.0f));
     glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 1.0f, 0.0f));
     
-    return transtation * scale * rotation;
+    return translation * scale * rotation;
+}
+
+glm::mat4 createModelMatrix1() {
+    glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(1.4f, 0.0f, 0.0f));
+    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    return translation * scale * rotation;
+}
+
+glm::mat4 createModelMatrix2() {
+    glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(-1.4f, 0.0f, 0.0f));
+    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    return translation * scale * rotation;
 }
 
 glm::mat4 createViewMatrix() {
@@ -156,7 +260,7 @@ struct Face {
     std::array<int, 3> normalIndices;
 };
 
-bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec3>& out_textures, std::vector<glm::vec3>& out_normals, std::vector<Face>& out_faces, float scaleFactor = 1.0f)
+bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec3>& out_textures, std::vector<glm::vec3>& out_normals, std::vector<Face>& out_faces)
 {
     std::ifstream file(path);
     if (!file)
@@ -180,7 +284,6 @@ bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std:
         if (lineHeader == "v")
         {
             iss >> vertex.x >> vertex.y >> vertex.z;
-            vertex *= scaleFactor;
             out_vertices.push_back(vertex);
         }
         else if (lineHeader == "vn")
@@ -238,7 +341,7 @@ int main() {
     std::vector<Face> faces;
     std::vector<glm::vec3> vertexBufferObject;
 
-    if (loadOBJ("assets/sphere.obj", vertices, textures, normals, faces, 1.7f)) {
+    if (loadOBJ("assets/sphere.obj", vertices, textures, normals, faces)) {
         // For each face
         for (const auto& face : faces)
         {
@@ -253,7 +356,9 @@ int main() {
         }
     }
 
-    Uniform uniforms;
+    Uniform uniforms1;
+    Uniform uniforms2;
+    Uniform uniforms3;
 
     while (running) {
 
@@ -263,15 +368,31 @@ int main() {
             }
         }
 
-        uniforms.model = createModelMatrix();
-        uniforms.view = createViewMatrix();
-        uniforms.projection = createProjectionMatrix();
-        uniforms.viewport = createViewportMatrix();
-
         clear();
 
+        uniforms1.model = createModelMatrix();
+        uniforms1.view = createViewMatrix();
+        uniforms1.projection = createProjectionMatrix();
+        uniforms1.viewport = createViewportMatrix();
+
         // Call our render function
-        render(vertexBufferObject, uniforms);
+        render(vertexBufferObject, uniforms1);
+
+        uniforms2.model = createModelMatrix1();
+        uniforms2.view = createViewMatrix();
+        uniforms2.projection = createProjectionMatrix();
+        uniforms2.viewport = createViewportMatrix();
+
+        // Call our render function
+        render1(vertexBufferObject, uniforms2);
+
+        uniforms3.model = createModelMatrix2();
+        uniforms3.view = createViewMatrix();
+        uniforms3.projection = createProjectionMatrix();
+        uniforms3.viewport = createViewportMatrix();
+
+        // Call our render function
+        render2(vertexBufferObject, uniforms3);
 
         // Present the frame buffer to the screen
         SDL_RenderPresent(renderer);
