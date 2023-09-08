@@ -16,5 +16,6 @@ Al ejecutarlo se verá algo así:
 
 
 
+![Gigante](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/4f783895-36ab-4492-9e5b-792a418b6570)
 
 
