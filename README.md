@@ -16,5 +16,6 @@ Al ejecutarlo se verá algo así:
 
 
 
+![Tierra](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/4ad8fe7b-a1f5-4674-98c6-36cfff02c563)
 
 
