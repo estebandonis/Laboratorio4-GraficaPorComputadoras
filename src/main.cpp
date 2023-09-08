@@ -113,7 +113,7 @@ float a = 3.14f / 3.0f;
 
 glm::mat4 createModelMatrix() {
     glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.0f, 1.0f, 1.0f));
+    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.5f, 1.5f, 1.5f));
     glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a++), glm::vec3(0.0f, 1.0f, 0.0f));
     
     return translation * scale * rotation;
@@ -156,7 +156,7 @@ struct Face {
     std::array<int, 3> normalIndices;
 };
 
-bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec3>& out_textures, std::vector<glm::vec3>& out_normals, std::vector<Face>& out_faces, float scaleFactor = 1.0f)
+bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec3>& out_textures, std::vector<glm::vec3>& out_normals, std::vector<Face>& out_faces)
 {
     std::ifstream file(path);
     if (!file)
@@ -180,7 +180,6 @@ bool loadOBJ(const std::string& path, std::vector<glm::vec3>& out_vertices, std:
         if (lineHeader == "v")
         {
             iss >> vertex.x >> vertex.y >> vertex.z;
-            vertex *= scaleFactor;
             out_vertices.push_back(vertex);
         }
         else if (lineHeader == "vn")
@@ -238,7 +237,7 @@ int main() {
     std::vector<Face> faces;
     std::vector<glm::vec3> vertexBufferObject;
 
-    if (loadOBJ("assets/sphere.obj", vertices, textures, normals, faces, 2.5f)) {
+    if (loadOBJ("assets/sphere.obj", vertices, textures, normals, faces)) {
         // For each face
         for (const auto& face : faces)
         {

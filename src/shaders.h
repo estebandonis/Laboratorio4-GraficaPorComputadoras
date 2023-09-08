@@ -32,8 +32,8 @@ float random_float_in_range(float min, float max) {
 
 Fragment fragmentShader(Fragment& fragment) {
     Color color;
-    glm::vec3 redColor = glm::vec3(0.88f, 0.22f, 0.08f);
-    glm::vec3 rederColor = glm::vec3 (0.98f, 0.10f, 0.08f);
+    glm::vec3 greenColor = glm::vec3(0.56f, 0.64f, 0.19f);
+    glm::vec3 blueColor = glm::vec3 (0.31f, 0.51f, 0.61f);
     glm::vec3 blackColor = glm::vec3(0.2f, 0.2f, 0.2f);
     glm::vec3 grayColor = glm::vec3(0.8f, 0.8f, 0.8f);
 
@@ -42,25 +42,29 @@ Fragment fragmentShader(Fragment& fragment) {
     FastNoiseLite noiseGenerator;
     noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 
+    FastNoiseLite noiseGenerator2;
+    noiseGenerator2.SetFractalType(FastNoiseLite::FractalType_FBm);
+
     float ox = 900.0f;
     float oy = 400.0f;
     float zoom = 200.0f;
 
     float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
 
-    glm:: vec3 tmpColor = (noiseValue < 0.3f) ? rederColor: redColor;
+    glm:: vec3 tmpColor = (noiseValue < 0.3f) ? blueColor: greenColor;
 
     float oxc = 200.0f;
     float oyc = 5600.0f;
-    float zoomc = 80.0f;
+    float zoomc = 1000.0f;
 
-    float noiseValueC = noiseGenerator.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
+    float noiseValueC = noiseGenerator2.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
 
-    float random_float = random_float_in_range(0.2, 0.8);
+    float random_float = random_float_in_range(0.0, 0.8);
 
     if (noiseValueC > random_float) {
         tmpColor = blackColor;
     }
+
 
     float oxl = 200.0f;
     float oyl = 5600.0f;
