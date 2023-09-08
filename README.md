@@ -16,5 +16,6 @@ Al ejecutarlo se verá algo así:
 
 
 
+![Planeta](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/dbe8ddcf-5118-4914-beb7-bab3f3220717)
 
 
