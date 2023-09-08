@@ -16,5 +16,6 @@ Al ejecutarlo se verá algo así:
 
 
 
+![PlanetaX](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/0c8ca69f-59f0-4d14-9f9e-ef96c0279d8a)
 
 
