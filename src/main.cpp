@@ -14,7 +14,7 @@
 #include "shaders.h"
 #include "triangle.h"
 
-const int WINDOW_WIDTH = 800;
+const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 500;
 
 std::array<std::array<float, WINDOW_WIDTH>, WINDOW_HEIGHT> zbuffer;
@@ -155,12 +155,12 @@ void render1(std::vector<glm::vec3> VBO, const Uniform& uniforms) {
 
 float a = 3.14f / 3.0f;
 float b = 3.14f / 3.0f;
-float orbitRadius = 2.0f;
+float orbitRadius = 1.5f;
 float orbitSpeed = 0.1f;
 
 glm::mat4 createModelMatrix() {
     glm::mat4 translation = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
-    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(1.7f, 1.7f, 1.7f));
+    glm::mat4 scale = glm::scale(glm::mat4(1), glm::vec3(0.8f, 0.8f, 0.8f));
     a += 3;
     glm::mat4 rotation = glm::rotate(glm::mat4(1), glm::radians(a), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -173,7 +173,7 @@ glm::mat4 createModelMatrix1(float deltaTime) {
     float z = orbitRadius * glm::sin(orbitalAngle);
 
     glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(x, 0.0f, z));
-    glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f, 0.2f, 0.2f));
     b += 20;
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(b), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -193,7 +193,7 @@ glm::mat4 createViewMatrix() {
 
 glm::mat4 createProjectionMatrix() {
   float fovInDegrees = 45.0f;
-  float aspectRatio = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
+  float aspectRatio = 1000.0f / 800.0f;
   float nearClip = 0.1f;
   float farClip = 100.0f;
 
@@ -203,14 +203,14 @@ glm::mat4 createProjectionMatrix() {
 glm::mat4 createViewportMatrix() {
     glm::mat4 viewport = glm::mat4(1.0f);
 
-    // Scale
-    viewport = glm::scale(viewport, glm::vec3(WINDOW_WIDTH / 3.0f, WINDOW_HEIGHT / 3.0f, 0.5f));
+    viewport = glm::scale(viewport, glm::vec3(WINDOW_WIDTH/2.0f, WINDOW_HEIGHT/2.0f, 0.5f));
 
     // Translate
-    viewport = glm::translate(viewport, glm::vec3(1.0f, 1.0f, 1.0f));
+    viewport = glm::translate(viewport, glm::vec3(1.0f, 1.0f, 0.5f));
 
     return viewport;
 }
+
 
 struct Face {
     std::array<int, 3> vertexIndices;
