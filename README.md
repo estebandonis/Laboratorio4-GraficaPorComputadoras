@@ -15,7 +15,7 @@ Y luego ejecutar el siguiente comando en la terminal:
 Al ejecutarlo se verá algo así:
 
 
+![PlanetaX](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/5574382e-226b-4c71-beff-d036b88c4669)
 
-![PlanetaX](https://github.com/estebandonis/Laboratorio4-GraficaPorComputadoras/assets/77749546/0c8ca69f-59f0-4d14-9f9e-ef96c0279d8a)
 
 
