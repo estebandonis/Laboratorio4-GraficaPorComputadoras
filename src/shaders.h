@@ -37,7 +37,11 @@ Fragment fragmentShader(Fragment& fragment) {
     glm::vec3 oceanColor = glm::vec3(0.12f, 0.38f, 0.57f);
     glm::vec3 cloudColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    glm::vec2 uv = glm::vec2(fragment.original.x, fragment.original.y);
+    glm::vec3 uv = glm::vec3(
+            fragment.original.x,
+            fragment.original.y,
+            fragment.original.z
+            );
 
     FastNoiseLite noiseGenerator;
     noiseGenerator.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
@@ -46,7 +50,7 @@ Fragment fragmentShader(Fragment& fragment) {
     float oy = 3000.0f;
     float zoom = 200.0f;
 
-    float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom);
+    float noiseValue = noiseGenerator.GetNoise((uv.x + ox) * zoom, (uv.y + oy) * zoom, uv.z * zoom);
 
     glm::vec3 tmpColor = (noiseValue < 0.5f) ? oceanColor : groundColor;
 
@@ -54,7 +58,7 @@ Fragment fragmentShader(Fragment& fragment) {
     float oyc = 9800.0f;
     float zoomc = 100.0f;
 
-    float noiseValueC = noiseGenerator.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc);
+    float noiseValueC = noiseGenerator.GetNoise((uv.x + oxc) * zoomc, (uv.y + oyc) * zoomc, uv.z * zoomc);
 
     float random_float = random_float_in_range(0.5, 0.8);
 
